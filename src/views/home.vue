@@ -1,15 +1,16 @@
-<!--
- * @Author: daidai
- * @Date: 2022-01-12 14:23:32
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-28 14:22:06
- * @FilePath: \web-pc\src\pages\big-screen\view\home.vue
--->
 <template>
-  <div id="index" ref="appRef" class="index_home" :class="{ pageisScale: isScale }">
+  <div
+    id="index"
+    ref="appRef"
+    class="index_home"
+    :class="{ pageisScale: isScale }"
+  >
     <div class="bg">
       <dv-loading v-if="loading">Loading...</dv-loading>
-      <div v-else class="host-body">
+      <div
+        v-else
+        class="host-body"
+      >
         <!-- 头部 s -->
         <div class="d-flex jc-center title_wrap">
           <div class="zuojuxing"></div>
@@ -23,7 +24,11 @@
           <div class="timers ">
 
             {{ dateYear }} {{ dateWeek }} {{ dateDay }}
-            <i class=" blq-icon-shezhi02" style="margin-left:10px" @click="showSetting"></i>
+            <i
+              class=" blq-icon-shezhi02"
+              style="margin-left:10px"
+              @click="showSetting"
+            ></i>
           </div>
         </div>
         <!-- 头部 e-->
@@ -32,7 +37,7 @@
         <!-- 内容 e -->
       </div>
     </div>
-    <Setting ref="setting"/>
+    <Setting ref="setting" />
   </div>
 </template>
 
@@ -42,7 +47,7 @@ import { formatTime } from "../utils/index.js";
 import Setting from './setting.vue'
 export default {
   mixins: [drawMixin],
-  components:{Setting},
+  components: { Setting },
   data() {
     return {
       timing: null,
@@ -61,10 +66,10 @@ export default {
       return msg || 0;
     },
   },
-  computed:{
+  computed: {
 
   },
-  created(){
+  created() {
 
   },
   mounted() {
@@ -75,8 +80,8 @@ export default {
     clearInterval(this.timing);
   },
   methods: {
-    showSetting(){
-        this.$refs.setting.init()
+    showSetting() {
+      this.$refs.setting.init()
     },
     timeFn() {
       this.timing = setInterval(() => {

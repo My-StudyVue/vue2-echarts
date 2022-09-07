@@ -1,19 +1,20 @@
-<!--
- * @Author: daidai
- * @Date: 2022-03-01 09:43:37
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-07 11:36:18
- * @FilePath: \web-pc\src\pages\big-screen\view\indexs\left-bottom.vue
--->
 <template>
   <div
     v-if="pageflag"
     class="left_boottom_wrap beautify-scroll-def"
     :class="{ 'overflow-y-auto': !sbtxSwiperFlag }"
   >
-    <component :is="components" :data="list" :class-option="defaultOption">
+    <component
+      :is="components"
+      :data="list"
+      :class-option="defaultOption"
+    >
       <ul class="left_boottom">
-        <li class="left_boottom_item" v-for="(item, i) in list" :key="i">
+        <li
+          class="left_boottom_item"
+          v-for="(item, i) in list"
+          :key="i"
+        >
           <span class="orderNum doudong">{{ i + 1 }}</span>
           <div class="inner_right">
             <div class="dibu"></div>
@@ -21,31 +22,33 @@
               <div class="info">
                 <span class="labels">设备ID：</span>
                 <span class="contents zhuyao doudong wangguan">
-                  {{ item.gatewayno }}</span
-                >
+                  {{ item.gatewayno }}</span>
               </div>
               <div class="info">
                 <span class="labels">时间：</span>
-                <span class="contents " style="font-size: 12px">
-                  {{ item.createTime }}</span
+                <span
+                  class="contents "
+                  style="font-size: 12px"
                 >
+                  {{ item.createTime }}</span>
               </div>
             </div>
 
-              <span
-                class="types doudong"
-                :class="{
+            <span
+              class="types doudong"
+              :class="{
                   typeRed: item.onlineState == 0,
                   typeGreen: item.onlineState == 1,
                 }"
-                >{{ item.onlineState == 1 ? "上线" : "下线" }}</span
-              >
+            >{{ item.onlineState == 1 ? "上线" : "下线" }}</span>
 
             <div class="info addresswrap">
               <span class="labels">地址：</span>
-              <span class="contents ciyao" style="font-size: 12px">
-                {{ addressHandle(item) }}</span
+              <span
+                class="contents ciyao"
+                style="font-size: 12px"
               >
+                {{ addressHandle(item) }}</span>
             </div>
           </div>
         </li>
@@ -53,7 +56,11 @@
     </component>
   </div>
 
-  <Reacquire v-else @onclick="getData" style="line-height: 200px" />
+  <Reacquire
+    v-else
+    @onclick="getData"
+    style="line-height: 200px"
+  />
 </template>
 
 <script>
@@ -70,7 +77,7 @@ export default {
       defaultOption: {
         ...this.$store.state.setting.defaultOption,
         singleHeight: 240,
-        limitMoveNum: 5, 
+        limitMoveNum: 5,
         step: 0,
       },
     };
@@ -90,7 +97,7 @@ export default {
     this.getData();
   },
 
-  mounted() {},
+  mounted() { },
   methods: {
     addressHandle(item) {
       let name = item.provinceName;
@@ -222,7 +229,6 @@ export default {
       width: 80px;
       flex-shrink: 0;
     }
-
 
     .time {
       font-size: 12px;

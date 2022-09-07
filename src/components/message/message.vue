@@ -1,15 +1,21 @@
-<!--
- * @Author: daidai
- * @Date: 2022-03-02 17:07:40
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-26 11:41:27
- * @FilePath: \web-pc\src\pages\big-screen\components\message\message.vue
--->
 <template>
-  <div class="messages" v-if="visible">
-    <svg fill="none" viewBox="0 0 16 16" width="1em" height="1em" class="message-icon">
-      <path fill="currentColor" d="M15 8A7 7 0 101 8a7 7 0 0014 0zM8.5 4v5.5h-1V4h1zm-1.1 7h1.2v1.2H7.4V11z"
-        fill-opacity="0.9" v-if="'warning'==type"></path>
+  <div
+    class="messages"
+    v-if="visible"
+  >
+    <svg
+      fill="none"
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      class="message-icon"
+    >
+      <path
+        fill="currentColor"
+        d="M15 8A7 7 0 101 8a7 7 0 0014 0zM8.5 4v5.5h-1V4h1zm-1.1 7h1.2v1.2H7.4V11z"
+        fill-opacity="0.9"
+        v-if="'warning'==type"
+      ></path>
     </svg>
     {{ text }}
   </div>
@@ -21,7 +27,7 @@ export default {
     return {
       visible: false,
       text: "",
-      type:'warning'
+      type: 'warning'
     };
   },
   props: {},

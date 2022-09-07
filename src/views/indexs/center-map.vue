@@ -1,10 +1,3 @@
-<!--
- * @Author: daidai
- * @Date: 2022-03-01 11:17:39
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-07 10:59:56
- * @FilePath: \web-pc\src\pages\big-screen\view\indexs\center-map.vue
--->
 <template>
   <div class="centermap">
     <div class="maptitle">
@@ -13,12 +6,20 @@
       <div class="you"></div>
     </div>
     <div class="mapwrap">
-       <dv-border-box-13 >
-      <div class="quanguo" @click="getData(-1)" v-if="code !== 'china' && userCode == -1">
-        中国
-      </div>
+      <dv-border-box-13>
+        <div
+          class="quanguo"
+          @click="getData(-1)"
+          v-if="code !== 'china' && userCode == -1"
+        >
+          中国
+        </div>
 
-      <Echart id="CenterMap" :options="options" ref="CenterMap" />
+        <Echart
+          id="CenterMap"
+          :options="options"
+          ref="CenterMap"
+        />
       </dv-border-box-13>
     </div>
   </div>
@@ -32,7 +33,7 @@ import { GETNOBASE } from 'api'
 export default {
   data() {
     return {
-      maptitle: "设备分布图",
+      maptitle: "毕业生分布图",
       options: {},
       code: "china",
       userCode: -1,//-1 代表中国 用户权限的行政区code
@@ -49,8 +50,7 @@ export default {
   },
   methods: {
     getData(code) {
-      currentGET('big8',{regionCode:code}).then(res => {
-        console.log('设备分布', res);
+      currentGET('big8', { regionCode: code }).then(res => {
         if (res.success) {
           if (!code) {
             this.userCode = res.data.regionCode;
@@ -350,10 +350,12 @@ export default {
       font-size: 28px;
       font-weight: 900;
       letter-spacing: 6px;
-      background: linear-gradient(92deg,
-          #0072ff 0%,
-          #00eaff 48.8525390625%,
-          #01aaff 100%);
+      background: linear-gradient(
+        92deg,
+        #0072ff 0%,
+        #00eaff 48.8525390625%,
+        #01aaff 100%
+      );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin: 0 10px;
@@ -377,7 +379,6 @@ export default {
   }
 
   .mapwrap {
-   
     height: 548px;
     width: 100%;
     // padding: 0 0 10px 0;

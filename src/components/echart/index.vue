@@ -1,12 +1,9 @@
-<!--
- * @Author: daidai
- * @Date: 2022-02-28 16:29:08
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-25 15:45:57
- * @FilePath: \web-pc\src\pages\big-screen\components\echart\index.vue
--->
 <template>
-  <div :id="id" :class="className" :style="{ height: height, width: width }" />
+  <div
+    :id="id"
+    :class="className"
+    :style="{ height: height, width: width }"
+  />
 </template>
 
 <script>
@@ -33,33 +30,33 @@ export default {
     },
     options: {
       type: Object,
-      default: ()=>({})
+      default: () => ({})
     }
   },
-  data () {
+  data() {
     return {
       chart: null
     }
   },
   watch: {
     options: {
-      handler (options) {
+      handler(options) {
         // 设置true清空echart缓存
         this.chart.setOption(options, true)
       },
       deep: true
     }
   },
-  mounted () {
+  mounted() {
     // echarts.registerTheme('tdTheme', tdTheme); // 覆盖默认主题
     this.initChart();
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.chart.dispose()
     this.chart = null
   },
   methods: {
-    initChart () {
+    initChart() {
       // 初始化echart
       this.chart = echarts.init(this.$el, 'tdTheme')
       this.chart.setOption(this.options, true)

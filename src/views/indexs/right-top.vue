@@ -1,10 +1,3 @@
-<!--
- * @Author: daidai
- * @Date: 2022-03-01 14:13:04
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-07 11:17:49
- * @FilePath: \web-pc\src\pages\big-screen\view\indexs\right-top.vue
--->
 <template>
   <Echart
     id="rightTop"
@@ -13,7 +6,11 @@
     v-if="pageflag"
     ref="charts"
   />
-  <Reacquire v-else @onclick="getData" style="line-height: 200px">
+  <Reacquire
+    v-else
+    @onclick="getData"
+    style="line-height: 200px"
+  >
     重新获取
   </Reacquire>
 </template>
@@ -33,7 +30,7 @@ export default {
     this.getData();
   },
 
-  mounted() {},
+  mounted() { },
   beforeDestroy() {
     this.clearData();
   },

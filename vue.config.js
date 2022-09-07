@@ -1,9 +1,3 @@
-/*
- * @Author: daidai
- * @Date: 2021-11-22 14:57:15
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-29 15:12:50
- */
 const path = require("path");
 function resolve(dir) {
   return path.join(__dirname, dir);

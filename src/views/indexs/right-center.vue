@@ -1,13 +1,9 @@
-<!--
- * @Author: daidai
- * @Date: 2022-03-01 15:51:43
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-28 15:24:27
- * @FilePath: \web-pc\src\pages\big-screen\view\indexs\right-bottom.vue
--->
 <template>
   <div class="right_bottom">
-    <dv-capsule-chart :config="config" style="width:100%;height:260px" />
+    <dv-capsule-chart
+      :config="config"
+      style="width:100%;height:260px"
+    />
   </div>
 </template>
 
@@ -84,7 +80,7 @@ export default {
   height: 100%;
   overflow: hidden;
 
-  ::v-deep  .kong {
+  ::v-deep .kong {
     width: auto;
   }
 }
@@ -93,7 +89,6 @@ export default {
   .img_wrap {
     overflow-x: auto;
   }
-
 }
 
 .right_bottom {
@@ -120,7 +115,8 @@ export default {
         margin-left: 30px;
       }
 
-      input {}
+      input {
+      }
     }
   }
 
@@ -147,10 +143,6 @@ export default {
         flex-shrink: 0;
       }
     }
-
-
-
-
   }
 
   .noData {
@@ -158,7 +150,6 @@ export default {
     line-height: 100px;
     text-align: center;
     color: rgb(129, 128, 128);
-
   }
 }
 </style>

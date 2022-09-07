@@ -1,20 +1,14 @@
-<!--
- * @Author: daidai
- * @Date: 2022-03-01 09:16:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-07 11:06:23
- * @FilePath: \web-pc\src\pages\big-screen\components\item-wrap\item-wrap.vue
--->
 <template>
   <dv-border-box-13 class="lr_titles">
-    <div class="item_title" v-if="title !== ''">
+    <div
+      class="item_title"
+      v-if="title !== ''"
+    >
       <div class="zuo"></div>
       <span class="title-inner"> &nbsp;&nbsp;{{ title }}&nbsp;&nbsp; </span>
       <div class="you"></div>
     </div>
-    <div
-      :class="title !== '' ? 'item_title_content' : 'item_title_content_def'"
-    >
+    <div :class="title !== '' ? 'item_title_content' : 'item_title_content_def'">
       <slot></slot>
     </div>
   </dv-border-box-13>
@@ -31,9 +25,9 @@ export default {
       default: () => "",
     },
   },
-  created() {},
+  created() { },
 
-  mounted() {},
+  mounted() { },
   methods: {},
 };
 </script>

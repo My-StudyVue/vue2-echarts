@@ -1,10 +1,3 @@
-/*
- * @Author: daidai
- * @Date: 2021-12-06 15:53:24
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-22 09:31:24
- * @FilePath: \web-pc\src\lib\currency.js
- */
 import router from '@/router'
 import { isString, isHtmlElement } from './types'
 import UtilVar from "@/config/UtilVar";
@@ -118,7 +111,7 @@ export function treeDataTranslate(data, id, pid, order) {
   return res
 }
 
-//带了一个 margin-left  
+//带了一个 margin-left
 export const dragss = (e, marginleft) => {
 
   let odiv = e.currentTarget.parentElement;
@@ -212,7 +205,7 @@ export const exportFile = (data, name) => {
       // console.log(data)
       try {
         let blob = new Blob([data], {
-          type:data.type|| 'application/vnd.ms-excel;charset=UTF-8'
+          type: data.type || 'application/vnd.ms-excel;charset=UTF-8'
         })
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, name);
@@ -253,7 +246,7 @@ export const exportFile = (data, name) => {
       }
     } else {
       // console.log(data)
-       readFile(data).then(res => {
+      readFile(data).then(res => {
         resolve(res)
       }).catch(err => {
         resolve({
@@ -268,7 +261,7 @@ export const exportFile = (data, name) => {
 //阅读 blod
 export const readFile = (data) => {
   return new Promise((resole, reject) => {
-    if (Object.prototype.toString.call(data)==='[object Blob]') {
+    if (Object.prototype.toString.call(data) === '[object Blob]') {
       let reader = new FileReader()
       reader.readAsText(data, 'utf-8')
       reader.onload = (e) => {
@@ -338,7 +331,7 @@ export const ArrayCleanRepeat = (origin, target) => {
   return result
 }
 /**
- * @description: 
+ * @description:
  * @param {file:Object} 文件
  * @return {*}
  */
@@ -399,11 +392,11 @@ export const getArrDifference = (arr1, arr2) => {
 
 /**
  * 表格最大高度
- * @param {ElementDom} dom 
+ * @param {ElementDom} dom
  * @param {Boolean} isPaging 是否拥有分页 false 没有 ||  true 有 默认有
- * @returns 
+ * @returns
  */
-export const tableHeight = (dom,isPaging=true) => {
+export const tableHeight = (dom, isPaging = true) => {
   //定位父级到文档高度
   if (isString(dom)) {
     dom = document.querySelector(dom)
@@ -414,10 +407,10 @@ export const tableHeight = (dom,isPaging=true) => {
   if (isHtmlElement(dom)) {
     var parent = dom.offsetParent;
     var top = dom.offsetTop
-    if(isPaging){
-      top= top+ 63 + 4
-    }else{
-      top= top+ 16
+    if (isPaging) {
+      top = top + 63 + 4
+    } else {
+      top = top + 16
     }
     while (parent != null) {
       top += parent.offsetTop;

@@ -1,13 +1,16 @@
-<!--
- * @Author: daidai
- * @Date: 2022-02-28 16:16:42
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-28 09:46:18
- * @FilePath: \web-pc\src\pages\big-screen\view\indexs\left-center.vue
--->
 <template>
-  <Echart id="leftCenter" :options="options" class="left_center_inner" v-if="pageflag" ref="charts" />
-  <Reacquire v-else @onclick="getData" style="line-height:200px">
+  <Echart
+    id="leftCenter"
+    :options="options"
+    class="left_center_inner"
+    v-if="pageflag"
+    ref="charts"
+  />
+  <Reacquire
+    v-else
+    @onclick="getData"
+    style="line-height:200px"
+  >
     重新获取
   </Reacquire>
 </template>
