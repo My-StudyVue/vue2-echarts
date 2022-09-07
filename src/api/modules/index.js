@@ -1,7 +1,7 @@
 import * as API from "../api";
 
 export const paramType = {
-  'big1': "/bigscreen/countUserNum", //用户总览
+  'big1': "/bigscreen/countUserNum", //苏州大市内外就业占比情况
   'big2': "/bigscreen/countDeviceNum", //设备总览
   'big3': "/bigscreen/sbtx", //设备提醒
   'big4': "/bigscreen/alarmNum", //报警次数

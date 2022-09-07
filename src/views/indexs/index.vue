@@ -7,14 +7,13 @@
       </div>
       <ItemWrap
         class="contetn_left-top contetn_lr-item"
-        title="设备总览"
+        title="苏州大市内外就业占比情况"
       >
         <LeftTop />
-
       </ItemWrap>
       <ItemWrap
         class="contetn_left-center contetn_lr-item"
-        title="用户总览"
+        title="设备总览"
       >
         <LeftCenter />
       </ItemWrap>
@@ -28,12 +27,6 @@
     </div>
     <div class="contetn_center">
       <CenterMap class="contetn_center_top" />
-      <ItemWrap
-        class="contetn_center-bottom"
-        title="安装计划"
-      >
-        <CenterBottom />
-      </ItemWrap>
     </div>
     <div class="contetn_right">
       <ItemWrap
@@ -64,7 +57,6 @@ import LeftTop from './left-top.vue'
 import LeftCenter from "./left-center.vue";
 import LeftBottom from "./left-bottom.vue";
 import CenterMap from "./center-map.vue";
-import CenterBottom from "./center-bottom.vue";
 import RightTop from "./right-top.vue";
 import RightCenter from "./right-center.vue";
 import RightBottom from "./right-bottom.vue";
@@ -78,7 +70,6 @@ export default {
     RightTop,
     RightCenter,
     RightBottom,
-    CenterBottom,
   },
   data() {
     return {

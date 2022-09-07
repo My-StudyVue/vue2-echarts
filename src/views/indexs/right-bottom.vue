@@ -1,209 +1,183 @@
 <template>
-  <div
-    v-if="pageflag"
-    class="right_center_wrap beautify-scroll-def"
-    :class="{ 'overflow-y-auto': !sbtxSwiperFlag }"
-  >
-    <component
-      :is="components"
-      :data="list"
-      :class-option="defaultOption"
-    >
-      <ul class="right_center ">
-        <li
-          class="right_center_item"
-          v-for="(item, i) in list"
-          :key="i"
-        >
-          <span class="orderNum">{{ i + 1 }}</span>
-          <div class="inner_right">
-            <div class="dibu"></div>
-            <div class="flex">
-              <div class="info">
-                <span class="labels ">设备ID：</span>
-                <span class="contents zhuyao"> {{ item.gatewayno }}</span>
-              </div>
-              <div class="info">
-                <span class="labels">型号：</span>
-                <span class="contents "> {{ item.terminalno }}</span>
-              </div>
-              <div class="info">
-                <span class="labels">告警值：</span>
-                <span class="contents warning"> {{ item.alertvalue | montionFilter }}</span>
-              </div>
-            </div>
-
-            <div class="flex">
-
-              <div class="info">
-                <span class="labels"> 地址：</span>
-                <span
-                  class="contents ciyao"
-                  style="font-size:12px"
-                > {{ item.provinceName }}/{{ item.cityName }}/{{ item.countyName }}</span>
-              </div>
-              <div class="info time">
-                <span class="labels">时间：</span>
-                <span
-                  class="contents"
-                  style="font-size:12px"
-                > {{ item.createtime }}</span>
-              </div>
-
-            </div>
-            <div class="flex">
-
-              <div class="info">
-                <span class="labels">报警内容：</span>
-                <span
-                  class="contents ciyao"
-                  :class="{ warning: item.alertdetail }"
-                > {{ item.alertdetail || '无'
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </component>
+  <div class="center_bottom">
+    <Echart
+      :options="options"
+      id="bottomLeftChart"
+      class="echarts_bottom"
+    ></Echart>
   </div>
-  <Reacquire
-    v-else
-    @onclick="getData"
-    style="line-height:200px"
-  />
-
 </template>
 
 <script>
-import { currentGET } from 'api/modules'
-import vueSeamlessScroll from 'vue-seamless-scroll'  // vue2引入方式
-import Kong from '../../components/kong.vue'
+import { currentGET } from 'api'
 export default {
-  components: { vueSeamlessScroll, Kong },
-
   data() {
     return {
-      list: [],
-      pageflag: true,
-      defaultOption: {
-        ...this.$store.state.setting.defaultOption,
-        limitMoveNum: 3,
-        singleHeight: 250,
-        step: 0,
-      }
-
+      options: {},
     };
   },
-  computed: {
-    sbtxSwiperFlag() {
-      let ssyjSwiper = this.$store.state.setting.ssyjSwiper
-      if (ssyjSwiper) {
-        this.components = vueSeamlessScroll
-      } else {
-        this.components = Kong
-      }
-      return ssyjSwiper
-    }
+  props: {
+
   },
-  created() {
+  mounted() {
     this.getData()
   },
-
-  mounted() { },
   methods: {
     getData() {
       this.pageflag = true
-      // this.pageflag =false
-      currentGET('big5', { limitNum: 50 }).then(res => {
-        console.log('实时预警', res);
+      currentGET('big6', { companyName: this.companyName }).then(res => {
+        console.log('安装计划', res);
         if (res.success) {
-          this.list = res.data.list
-          let timer = setTimeout(() => {
-            clearTimeout(timer)
-            this.defaultOption.step = this.$store.state.setting.defaultOption.step
-          }, this.$store.state.setting.defaultOption.waitTime);
+          this.init(res.data)
         } else {
           this.pageflag = false
-          this.$Message.warning(res.msg)
+          this.$Message({
+            text: res.msg,
+            type: 'warning'
+          })
         }
       })
     },
+    init(newData) {
+      this.options = {
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "rgba(0,0,0,.6)",
+          borderColor: "rgba(147, 235, 248, .8)",
+          textStyle: {
+            color: "#FFF",
+          },
+          formatter: function (params) {
+            // 添加单位
+            var result = params[0].name + "<br>";
+            params.forEach(function (item) {
+              if (item.value) {
+                if (item.seriesName == "安装率") {
+                  result += item.marker + " " + item.seriesName + " : " + item.value + "%</br>";
+                } else {
+                  result += item.marker + " " + item.seriesName + " : " + item.value + "个</br>";
+                }
+              } else {
+                result += item.marker + " " + item.seriesName + " :  - </br>";
+              }
+            });
+            return result;
+          }
+        },
+        legend: {
+          data: ["已安装", "计划安装", "安装率"],
+          textStyle: {
+            color: "#B4B4B4"
+          },
+          top: "0"
+        },
+        grid: {
+          left: "50px",
+          right: "40px",
+          bottom: "30px",
+          top: "20px",
+        },
+        xAxis: {
+          data: newData.category,
+          axisLine: {
+            lineStyle: {
+              color: "#B4B4B4"
+            }
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: [
+          {
+            splitLine: { show: false },
+            axisLine: {
+              lineStyle: {
+                color: "#B4B4B4"
+              }
+            },
 
+            axisLabel: {
+              formatter: "{value}"
+            }
+          },
+          {
+            splitLine: { show: false },
+            axisLine: {
+              lineStyle: {
+                color: "#B4B4B4"
+              }
+            },
+            axisLabel: {
+              formatter: "{value}% "
+            }
+          }
+        ],
+        series: [
+
+          {
+            name: "已安装",
+            type: "bar",
+            barWidth: 10,
+            itemStyle: {
+              normal: {
+                barBorderRadius: 5,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: "#956FD4" },
+                  { offset: 1, color: "#3EACE5" }
+                ])
+              }
+            },
+            data: newData.barData
+          },
+          {
+            name: "计划安装",
+            type: "bar",
+            barGap: "-100%",
+            barWidth: 10,
+            itemStyle: {
+              normal: {
+                barBorderRadius: 5,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: "rgba(156,107,211,0.8)" },
+                  { offset: 0.2, color: "rgba(156,107,211,0.5)" },
+                  { offset: 1, color: "rgba(156,107,211,0.2)" }
+                ])
+              }
+            },
+            z: -12,
+            data: newData.lineData
+          },
+          {
+            name: "安装率",
+            type: "line",
+            smooth: true,
+            showAllSymbol: true,
+            symbol: "emptyCircle",
+            symbolSize: 8,
+            yAxisIndex: 1,
+            itemStyle: {
+              normal: {
+                color: "#F02FC2"
+              }
+            },
+            data: newData.rateData
+          },
+        ]
+      }
+    }
   },
-};
+
+}
 </script>
-<style lang='scss' scoped>
-.right_center {
+<style lang="scss" scoped>
+.center_bottom {
   width: 100%;
   height: 100%;
 
-  .right_center_item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: auto;
-    padding: 10px;
-    font-size: 14px;
-    color: #fff;
-
-    .orderNum {
-      margin: 0 20px 0 -20px;
-    }
-
-    .inner_right {
-      position: relative;
-      height: 100%;
-      width: 400px;
-      flex-shrink: 0;
-      line-height: 1.5;
-
-      .dibu {
-        position: absolute;
-        height: 2px;
-        width: 104%;
-        background-image: url("../../assets/img/zuo_xuxian.png");
-        bottom: -12px;
-        left: -2%;
-        background-size: cover;
-      }
-    }
-
-    .info {
-      margin-right: 10px;
-      display: flex;
-      align-items: center;
-
-      .labels {
-        flex-shrink: 0;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.6);
-      }
-
-      .zhuyao {
-        color: $primary-color;
-        font-size: 15px;
-      }
-
-      .ciyao {
-        color: rgba(255, 255, 255, 0.8);
-      }
-
-      .warning {
-        color: #e6a23c;
-        font-size: 15px;
-      }
-    }
+  .echarts_bottom {
+    width: 100%;
+    height: 100%;
   }
-}
-
-.right_center_wrap {
-  overflow: hidden;
-  width: 100%;
-  height: 250px;
-}
-
-.overflow-y-auto {
-  overflow-y: auto;
 }
 </style>

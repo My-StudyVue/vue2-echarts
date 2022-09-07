@@ -1,15 +1,62 @@
 <template>
-  <Echart
-    id="leftCenter"
-    :options="options"
-    class="left_center_inner"
+  <ul
+    class="user_Overview flex"
     v-if="pageflag"
-    ref="charts"
-  />
+  >
+    <li
+      class="user_Overview-item"
+      style="color: #00fdfa"
+    >
+      <div class="user_Overview_nums allnum ">
+        <dv-digital-flop
+          :config="config"
+          style="width:100%;height:100%;"
+        />
+      </div>
+      <p>总设备数</p>
+    </li>
+    <li
+      class="user_Overview-item"
+      style="color: #07f7a8"
+    >
+      <div class="user_Overview_nums online">
+        <dv-digital-flop
+          :config="onlineconfig"
+          style="width:100%;height:100%;"
+        />
+      </div>
+      <p>在线数</p>
+    </li>
+    <li
+      class="user_Overview-item"
+      style="color: #e3b337"
+    >
+      <div class="user_Overview_nums offline">
+        <dv-digital-flop
+          :config="offlineconfig"
+          style="width:100%;height:100%;"
+        />
+
+      </div>
+      <p>掉线数</p>
+    </li>
+    <li
+      class="user_Overview-item"
+      style="color: #f5023d"
+    >
+      <div class="user_Overview_nums laramnum">
+        <dv-digital-flop
+          :config="laramnumconfig"
+          style="width:100%;height:100%;"
+        />
+      </div>
+      <p>告警次数</p>
+    </li>
+  </ul>
   <Reacquire
     v-else
     @onclick="getData"
-    style="line-height:200px"
+    line-height="200px"
   >
     重新获取
   </Reacquire>
@@ -17,19 +64,64 @@
 
 <script>
 import { currentGET } from 'api/modules'
+let style = {
+  fontSize: 24
+}
 export default {
   data() {
     return {
       options: {},
-      countUserNumData: {
-        lockNum: 0,
-        onlineNum: 0,
+      userOverview: {
+        alarmNum: 0,
         offlineNum: 0,
-        totalNum: 0
+        onlineNum: 0,
+        totalNum: 0,
       },
       pageflag: true,
-      timer: null
+      timer: null,
+      config: {
+        number: [100],
+        content: '{nt}',
+        style: {
+          ...style,
+          // stroke: "#00fdfa",
+          fill: "#00fdfa",
+        },
+      },
+      onlineconfig: {
+        number: [0],
+        content: '{nt}',
+        style: {
+          ...style,
+          // stroke: "#07f7a8",
+          fill: "#07f7a8",
+        },
+      },
+      offlineconfig: {
+        number: [0],
+        content: '{nt}',
+        style: {
+          ...style,
+          // stroke: "#e3b337",
+          fill: "#e3b337",
+        },
+      },
+      laramnumconfig: {
+        number: [0],
+        content: '{nt}',
+        style: {
+          ...style,
+          // stroke: "#f5023d",
+          fill: "#f5023d",
+        },
+      }
+
     };
+  },
+  filters: {
+    numsFilter(msg) {
+      return msg || 0;
+    },
   },
   created() {
     this.getData()
@@ -48,29 +140,35 @@ export default {
       }
     },
     getData() {
-      this.pageflag = true
-      // this.pageflag =false
-
-      currentGET('big1').then(res => {
-        //只打印一次
+      this.pageflag = true;
+      currentGET("big2").then((res) => {
         if (!this.timer) {
           console.log("设备总览", res);
         }
         if (res.success) {
-          this.countUserNumData = res.data
-          this.$nextTick(() => {
-            this.init()
-            this.switper()
-          })
-
+          this.userOverview = res.data;
+          this.onlineconfig = {
+            ...this.onlineconfig,
+            number: [res.data.onlineNum]
+          }
+          this.config = {
+            ...this.config,
+            number: [res.data.totalNum]
+          }
+          this.offlineconfig = {
+            ...this.offlineconfig,
+            number: [res.data.offlineNum]
+          }
+          this.laramnumconfig = {
+            ...this.laramnumconfig,
+            number: [res.data.alarmNum]
+          }
+          this.switper()
         } else {
-          this.pageflag = false
-          this.$Message({
-            text: res.msg,
-            type: 'warning'
-          })
+          this.pageflag = false;
+          this.$Message.warning(res.msg);
         }
-      })
+      });
     },
     //轮询
     switper() {
@@ -81,154 +179,70 @@ export default {
         this.getData()
       };
       this.timer = setInterval(looper, this.$store.state.setting.echartsAutoTime);
-      let myChart = this.$refs.charts.chart
-      myChart.on('mouseover', params => {
-        this.clearData()
-      });
-      myChart.on('mouseout', params => {
-        this.timer = setInterval(looper, this.$store.state.setting.echartsAutoTime);
-      });
-    },
-    init() {
-      let total = this.countUserNumData.totalNum;
-      let colors = ["#ECA444", "#33A1DB", "#56B557"];
-      let piedata = {
-        name: "用户总览",
-        type: "pie",
-        radius: ["42%", "65%"],
-        avoidLabelOverlap: false,
-        itemStyle: {
-          borderRadius: 4,
-          borderColor: "rgba(0,0,0,0)",
-          borderWidth: 2,
-        },
-
-        color: colors,
-        data: [
-          // {
-          //   value: 0,
-          //   name: "告警",
-          //   label: {
-          //     shadowColor: colors[0],
-          //   },
-          // },
-          {
-            value: this.countUserNumData.lockNum,
-            name: "锁定",
-            label: {
-              shadowColor: colors[0],
-            },
-          },
-          {
-            value: this.countUserNumData.onlineNum,
-            name: "在线",
-            label: {
-              shadowColor: colors[2],
-            },
-          },
-          {
-            value: this.countUserNumData.offlineNum,
-            name: "离线",
-            label: {
-              shadowColor: colors[1],
-            },
-          },
-
-
-        ],
-      };
-      this.options = {
-        title: {
-          // zlevel: 0,
-          text: ["{value|" + total + "}", "{name|总数}"].join("\n"),
-          top: "center",
-          left: "center",
-          textStyle: {
-            rich: {
-              value: {
-                color: "#ffffff",
-                fontSize: 24,
-                fontWeight: "bold",
-                lineHeight: 20,
-              },
-              name: {
-                color: "#ffffff",
-                lineHeight: 20,
-              },
-            },
-          },
-        },
-        tooltip: {
-          trigger: "item",
-          backgroundColor: "rgba(0,0,0,.6)",
-          borderColor: "rgba(147, 235, 248, .8)",
-          textStyle: {
-            color: "#FFF",
-          },
-        },
-        legend: {
-          show: false,
-          top: "5%",
-          left: "center",
-        },
-        series: [
-          //展示圆点
-          {
-            ...piedata,
-            tooltip: { show: true },
-            label: {
-              formatter: "   {b|{b}}   \n   {c|{c}个}   {per|{d}%}  ",
-              //   position: "outside",
-              rich: {
-                b: {
-                  color: "#fff",
-                  fontSize: 12,
-                  lineHeight: 26,
-                },
-                c: {
-                  color: "#31ABE3",
-                  fontSize: 14,
-                },
-                per: {
-                  color: "#31ABE3",
-                  fontSize: 14,
-                },
-              },
-            },
-            labelLine: {
-              length: 20, // 第一段线 长度
-              length2: 36, // 第二段线 长度
-              show: true,
-              emphasis: {
-                show: true,
-              },
-            },
-          },
-          {
-            ...piedata,
-            tooltip: { show: true },
-            itemStyle: {},
-            label: {
-              backgroundColor: "auto", //圆点颜色，auto：映射的系列色
-              height: 0,
-              width: 0,
-              lineHeight: 0,
-              borderRadius: 2.5,
-              shadowBlur: 8,
-              shadowColor: "auto",
-              padding: [2.5, -2.5, 2.5, -2.5],
-            },
-            labelLine: {
-              length: 20, // 第一段线 长度
-              length2: 36, // 第二段线 长度
-              show: false,
-            },
-          },
-        ],
-      };
     },
   },
 };
 </script>
 <style lang='scss' scoped>
+.user_Overview {
+  li {
+    flex: 1;
+
+    p {
+      text-align: center;
+      height: 16px;
+      font-size: 16px;
+    }
+
+    .user_Overview_nums {
+      width: 100px;
+      height: 100px;
+      text-align: center;
+      line-height: 100px;
+      font-size: 22px;
+      margin: 50px auto 30px;
+      background-size: cover;
+      background-position: center center;
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+
+      &.bgdonghua::before {
+        animation: rotating 14s linear infinite;
+      }
+    }
+
+    .allnum {
+      // background-image: url("../../assets/img/left_top_lan.png");
+      &::before {
+        background-image: url("../../assets/img/left_top_lan.png");
+      }
+    }
+
+    .online {
+      &::before {
+        background-image: url("../../assets/img/left_top_lv.png");
+      }
+    }
+
+    .offline {
+      &::before {
+        background-image: url("../../assets/img/left_top_huang.png");
+      }
+    }
+
+    .laramnum {
+      &::before {
+        background-image: url("../../assets/img/left_top_hong.png");
+      }
+    }
+  }
+}
 </style>
