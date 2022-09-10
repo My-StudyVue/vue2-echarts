@@ -31,20 +31,20 @@
     <div class="contetn_right">
       <ItemWrap
         class="contetn_left-bottom contetn_lr-item"
-        title="报警次数"
+        title="毕业生薪酬分布情况"
       >
         <RightTop />
       </ItemWrap>
       <ItemWrap
         class="contetn_left-bottom contetn_lr-item"
-        title="报警排名(TOP8)"
+        title="毕业生就业人数排名(TOP10)"
         style="padding: 0 10px 16px 10px"
       >
         <RightCenter />
       </ItemWrap>
       <ItemWrap
         class="contetn_left-bottom contetn_lr-item"
-        title="数据统计图 "
+        title="2021、2022年7月-9月就业人数对比"
       >
         <RightBottom />
       </ItemWrap>

@@ -4,11 +4,11 @@ export const paramType = {
   'big1': "/bigscreen/countUserNum", //苏州大市内外就业占比情况
   'big2': "/bigscreen/countDeviceNum", //设备总览
   'big3': "/bigscreen/sbtx", //设备提醒
-  'big4': "/bigscreen/alarmNum", //报警次数
+  'big4': "/bigscreen/alarmNum", //毕业生薪酬分布情况
   'big5': '/bigscreen/ssyj',//实时预警
   'big6': '/bigscreen/installationPlan',// 安装计划
-  'big7': '/bigscreen/ranking',// 报警排名
-  'big8': '/bigscreen/centermap',// //中间地图
+  'big7': '/bigscreen/ranking',// 毕业生就业人数排名
+  'big8': '/bigscreen/centermap',// 中间地图
 
 }
 /******************      通用增删改查       ********************* */

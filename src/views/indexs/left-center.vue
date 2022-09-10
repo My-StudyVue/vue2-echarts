@@ -1,248 +1,298 @@
 <template>
-  <ul
-    class="user_Overview flex"
+  <Echart
+    id="rightTop"
+    :options="option"
+    class="right_top_inner"
     v-if="pageflag"
-  >
-    <li
-      class="user_Overview-item"
-      style="color: #00fdfa"
-    >
-      <div class="user_Overview_nums allnum ">
-        <dv-digital-flop
-          :config="config"
-          style="width:100%;height:100%;"
-        />
-      </div>
-      <p>总设备数</p>
-    </li>
-    <li
-      class="user_Overview-item"
-      style="color: #07f7a8"
-    >
-      <div class="user_Overview_nums online">
-        <dv-digital-flop
-          :config="onlineconfig"
-          style="width:100%;height:100%;"
-        />
-      </div>
-      <p>在线数</p>
-    </li>
-    <li
-      class="user_Overview-item"
-      style="color: #e3b337"
-    >
-      <div class="user_Overview_nums offline">
-        <dv-digital-flop
-          :config="offlineconfig"
-          style="width:100%;height:100%;"
-        />
-
-      </div>
-      <p>掉线数</p>
-    </li>
-    <li
-      class="user_Overview-item"
-      style="color: #f5023d"
-    >
-      <div class="user_Overview_nums laramnum">
-        <dv-digital-flop
-          :config="laramnumconfig"
-          style="width:100%;height:100%;"
-        />
-      </div>
-      <p>告警次数</p>
-    </li>
-  </ul>
+    ref="charts"
+  />
   <Reacquire
     v-else
     @onclick="getData"
-    line-height="200px"
+    style="line-height: 200px"
   >
     重新获取
   </Reacquire>
 </template>
 
 <script>
-import { currentGET } from 'api/modules'
-let style = {
-  fontSize: 24
-}
+import { currentGET } from "api/modules";
+
 export default {
   data() {
     return {
-      options: {},
-      userOverview: {
-        alarmNum: 0,
-        offlineNum: 0,
-        onlineNum: 0,
-        totalNum: 0,
-      },
-      pageflag: true,
+      option: {},
+      pageflag: false,
       timer: null,
-      config: {
-        number: [100],
-        content: '{nt}',
-        style: {
-          ...style,
-          // stroke: "#00fdfa",
-          fill: "#00fdfa",
-        },
-      },
-      onlineconfig: {
-        number: [0],
-        content: '{nt}',
-        style: {
-          ...style,
-          // stroke: "#07f7a8",
-          fill: "#07f7a8",
-        },
-      },
-      offlineconfig: {
-        number: [0],
-        content: '{nt}',
-        style: {
-          ...style,
-          // stroke: "#e3b337",
-          fill: "#e3b337",
-        },
-      },
-      laramnumconfig: {
-        number: [0],
-        content: '{nt}',
-        style: {
-          ...style,
-          // stroke: "#f5023d",
-          fill: "#f5023d",
-        },
-      }
-
     };
   },
-  filters: {
-    numsFilter(msg) {
-      return msg || 0;
-    },
-  },
   created() {
-    this.getData()
+    this.getData();
   },
-  mounted() {
-  },
-  beforeDestroy() {
-    this.clearData()
 
+  mounted() { },
+  beforeDestroy() {
+    this.clearData();
   },
   methods: {
     clearData() {
       if (this.timer) {
-        clearInterval(this.timer)
-        this.timer = null
+        clearInterval(this.timer);
+        this.timer = null;
       }
     },
     getData() {
       this.pageflag = true;
-      currentGET("big2").then((res) => {
+      // this.pageflag =false
+      currentGET("big4").then((res) => {
         if (!this.timer) {
-          console.log("设备总览", res);
+          console.log("毕业生薪酬分布情况", res);
         }
         if (res.success) {
-          this.userOverview = res.data;
-          this.onlineconfig = {
-            ...this.onlineconfig,
-            number: [res.data.onlineNum]
-          }
-          this.config = {
-            ...this.config,
-            number: [res.data.totalNum]
-          }
-          this.offlineconfig = {
-            ...this.offlineconfig,
-            number: [res.data.offlineNum]
-          }
-          this.laramnumconfig = {
-            ...this.laramnumconfig,
-            number: [res.data.alarmNum]
-          }
-          this.switper()
+          this.countUserNumData = res.data;
+          this.$nextTick(() => {
+            this.init(res.data.dateList, res.data.numList, res.data.numList2),
+              this.switper();
+          });
         } else {
           this.pageflag = false;
-          this.$Message.warning(res.msg);
+          this.$Message({
+            text: res.msg,
+            type: "warning",
+          });
         }
       });
     },
     //轮询
     switper() {
       if (this.timer) {
-        return
+        return;
       }
       let looper = (a) => {
-        this.getData()
+        this.getData();
       };
-      this.timer = setInterval(looper, this.$store.state.setting.echartsAutoTime);
+      this.timer = setInterval(
+        looper,
+        this.$store.state.setting.echartsAutoTime
+      );
+      let myChart = this.$refs.charts.chart;
+      myChart.on("mouseover", (params) => {
+        this.clearData();
+      });
+      myChart.on("mouseout", (params) => {
+        this.timer = setInterval(
+          looper,
+          this.$store.state.setting.echartsAutoTime
+        );
+      });
+    },
+    init(xData, yData, yData2) {
+      this.option = {
+        xAxis: {
+          type: "category",
+          data: xData,
+          boundaryGap: false, // 不留白，从原点开始
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: "rgba(31,99,163,.2)",
+            },
+          },
+          axisLine: {
+            // show:false,
+            lineStyle: {
+              color: "rgba(31,99,163,.1)",
+            },
+          },
+          axisLabel: {
+            color: "#7EB7FD",
+            fontWeight: "500",
+          },
+        },
+        yAxis: {
+          type: "value",
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: "rgba(31,99,163,.2)",
+            },
+          },
+          axisLine: {
+            lineStyle: {
+              color: "rgba(31,99,163,.1)",
+            },
+          },
+          axisLabel: {
+            color: "#7EB7FD",
+            fontWeight: "500",
+          },
+        },
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "rgba(0,0,0,.6)",
+          borderColor: "rgba(147, 235, 248, .8)",
+          textStyle: {
+            color: "#FFF",
+          },
+        },
+        grid: {
+          //布局
+          show: true,
+          left: "10px",
+          right: "30px",
+          bottom: "10px",
+          top: "28px",
+          containLabel: true,
+          borderColor: "#1F63A3",
+        },
+        series: [
+          {
+            data: yData,
+            type: "line",
+            smooth: true,
+            symbol: "none", //去除点
+            name: "报警1次数",
+            color: "rgba(252,144,16,.7)",
+            areaStyle: {
+              normal: {
+                //右，下，左，上
+                color: new echarts.graphic.LinearGradient(
+                  0,
+                  0,
+                  0,
+                  1,
+                  [
+                    {
+                      offset: 0,
+                      color: "rgba(252,144,16,.7)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(252,144,16,.0)",
+                    },
+                  ],
+                  false
+                ),
+              },
+            },
+            markPoint: {
+              data: [
+                {
+                  name: "最大值",
+                  type: "max",
+                  valueDim: "y",
+                  symbol: "rect",
+                  symbolSize: [60, 26],
+                  symbolOffset: [0, -20],
+                  itemStyle: {
+                    color: "rgba(0,0,0,0)",
+                  },
+                  label: {
+                    color: "#FC9010",
+                    backgroundColor: "rgba(252,144,16,0.1)",
+                    borderRadius: 6,
+                    padding: [7, 14],
+                    borderWidth: 0.5,
+                    borderColor: "rgba(252,144,16,.5)",
+                    formatter: "报警1：{c}",
+                  },
+                },
+                {
+                  name: "最大值",
+                  type: "max",
+                  valueDim: "y",
+                  symbol: "circle",
+                  symbolSize: 6,
+                  itemStyle: {
+                    color: "#FC9010",
+                    shadowColor: "#FC9010",
+                    shadowBlur: 8,
+                  },
+                  label: {
+                    formatter: "",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            data: yData2,
+            type: "line",
+            smooth: true,
+            symbol: "none", //去除点
+            name: "报警2次数",
+            color: "rgba(9,202,243,.7)",
+            areaStyle: {
+              normal: {
+                //右，下，左，上
+                color: new echarts.graphic.LinearGradient(
+                  0,
+                  0,
+                  0,
+                  1,
+                  [
+                    {
+                      offset: 0,
+                      color: "rgba(9,202,243,.7)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(9,202,243,.0)",
+                    },
+                  ],
+                  false
+                ),
+              },
+            },
+            markPoint: {
+              data: [
+                {
+                  name: "最大值",
+                  type: "max",
+                  valueDim: "y",
+                  symbol: "rect",
+                  symbolSize: [60, 26],
+                  symbolOffset: [0, -20],
+                  itemStyle: {
+                    color: "rgba(0,0,0,0)",
+                  },
+                  label: {
+                    color: "#09CAF3",
+                    backgroundColor: "rgba(9,202,243,0.1)",
+
+                    borderRadius: 6,
+                    borderColor: "rgba(9,202,243,.5)",
+                    padding: [7, 14],
+                    formatter: "报警2：{c}",
+                    borderWidth: 0.5,
+                  },
+                },
+                {
+                  name: "最大值",
+                  type: "max",
+                  valueDim: "y",
+                  symbol: "circle",
+                  symbolSize: 6,
+                  itemStyle: {
+                    color: "#09CAF3",
+                    shadowColor: "#09CAF3",
+                    shadowBlur: 8,
+                  },
+                  label: {
+                    formatter: "",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      };
     },
   },
 };
 </script>
 <style lang='scss' scoped>
-.user_Overview {
-  li {
-    flex: 1;
-
-    p {
-      text-align: center;
-      height: 16px;
-      font-size: 16px;
-    }
-
-    .user_Overview_nums {
-      width: 100px;
-      height: 100px;
-      text-align: center;
-      line-height: 100px;
-      font-size: 22px;
-      margin: 50px auto 30px;
-      background-size: cover;
-      background-position: center center;
-      position: relative;
-
-      &::before {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-      }
-
-      &.bgdonghua::before {
-        animation: rotating 14s linear infinite;
-      }
-    }
-
-    .allnum {
-      // background-image: url("../../assets/img/left_top_lan.png");
-      &::before {
-        background-image: url("../../assets/img/left_top_lan.png");
-      }
-    }
-
-    .online {
-      &::before {
-        background-image: url("../../assets/img/left_top_lv.png");
-      }
-    }
-
-    .offline {
-      &::before {
-        background-image: url("../../assets/img/left_top_huang.png");
-      }
-    }
-
-    .laramnum {
-      &::before {
-        background-image: url("../../assets/img/left_top_hong.png");
-      }
-    }
-  }
+.right_top_inner {
+  margin-top: -8px;
 }
 </style>

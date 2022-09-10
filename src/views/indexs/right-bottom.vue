@@ -26,7 +26,7 @@ export default {
     getData() {
       this.pageflag = true
       currentGET('big6', { companyName: this.companyName }).then(res => {
-        console.log('安装计划', res);
+        console.log('2021、2022年7月-9月就业人数对比', res);
         if (res.success) {
           this.init(res.data)
         } else {
@@ -52,7 +52,7 @@ export default {
             var result = params[0].name + "<br>";
             params.forEach(function (item) {
               if (item.value) {
-                if (item.seriesName == "安装率") {
+                if (item.seriesName == "增长率") {
                   result += item.marker + " " + item.seriesName + " : " + item.value + "%</br>";
                 } else {
                   result += item.marker + " " + item.seriesName + " : " + item.value + "个</br>";
@@ -65,7 +65,7 @@ export default {
           }
         },
         legend: {
-          data: ["已安装", "计划安装", "安装率"],
+          data: ["2021", "2022", "增长率"],
           textStyle: {
             color: "#B4B4B4"
           },
@@ -116,7 +116,7 @@ export default {
         series: [
 
           {
-            name: "已安装",
+            name: "2021",
             type: "bar",
             barWidth: 10,
             itemStyle: {
@@ -131,7 +131,7 @@ export default {
             data: newData.barData
           },
           {
-            name: "计划安装",
+            name: "2022",
             type: "bar",
             barGap: "-100%",
             barWidth: 10,
@@ -149,7 +149,7 @@ export default {
             data: newData.lineData
           },
           {
-            name: "安装率",
+            name: "增长率",
             type: "line",
             smooth: true,
             showAllSymbol: true,

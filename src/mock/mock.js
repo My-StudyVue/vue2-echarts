@@ -15,25 +15,24 @@ function countUserNum() {
       totalNum: '2000万'
     }
   })
-  // a.data.onlineNum = a.data.totalNum - a.data.offlineNum - a.data.lockNum
   return a
 }
 
 // 接口，第一个参数url，第二个参数请求类型，第三个参数响应回调
 Mock.mock(new RegExp('countUserNum'), 'get', countUserNum)
 
-// /设备总览
-
+//  毕业生薪酬分布情况
 function countDeviceNum() {
   const a = Mock.mock({
     success: true,
     data: {
-      alarmNum: '@integer(100, 1000)',
-      offlineNum: '@integer(0, 50)',
-      totalNum: 698
+      onlineNum: '@integer(200, 500)',
+      totalNum: '@integer(0, 100)',
+      alarmNum: '@integer(1000, 2000)',
+      offlineNum: '@integer(1000, 2000)',
     }
   })
-  a.data.onlineNum = a.data.totalNum - a.data.offlineNum
+  // a.data.onlineNum = a.data.totalNum - a.data.offlineNum
 
 
   return a
@@ -160,9 +159,9 @@ function installationPlan() {
   })
   let lineData = [], rateData = [];
   for (let index = 0; index < num; index++) {
-    let lineNum = Mock.mock('@integer(0, 100)') + a.barData[index]
+    let lineNum = Mock.mock('@integer(20, 100)') + a.barData[index]
     lineData.push(lineNum)
-    let rate = a.barData[index] / lineNum;
+    let rate = (lineNum - a.barData[index]) / a.barData[index];
     rateData.push((rate * 100).toFixed(0))
   }
   a.lineData = lineData
@@ -177,14 +176,14 @@ Mock.mock(new RegExp('installationPlan'), 'get', installationPlan)
 
 
 
-//报警排名
+//毕业生就业人数排名
 function ranking() {
   //多生成几个避免重复 重复会报错
-  let num = Mock.mock({ "list|48": [{ value: "@integer(50,1000)", name: "@city()" }] }).list
+  let num = Mock.mock({ "list|60": [{ value: "@integer(50,1000)", name: "@city()" }] }).list
   //   console.log(num);
   let newNum = [], numObj = {}
   num.map(item => {
-    if (!numObj[item.name] && newNum.length < 8) {
+    if (!numObj[item.name] && newNum.length < 10) {
       numObj[item.name] = true
       newNum.push(item)
     }
