@@ -14,6 +14,7 @@
         />
       </div>
       <p>12000以上</p>
+      <p class="rate">占比 {{rate(userOverview['totalNum'])}}</p>
     </li>
     <li
       class="user_Overview-item"
@@ -26,6 +27,7 @@
         />
       </div>
       <p>8000-12000</p>
+      <p class="rate">占比 {{rate(userOverview['onlineNum'])}}</p>
     </li>
     <li
       class="user_Overview-item"
@@ -39,6 +41,7 @@
 
       </div>
       <p>5000-8000</p>
+      <p class="rate">占比 {{rate(userOverview['offlineNum'])}}</p>
     </li>
     <li
       class="user_Overview-item"
@@ -51,6 +54,7 @@
         />
       </div>
       <p>5000以下</p>
+      <p class="rate">占比 {{rate(userOverview['alarmNum'])}}</p>
     </li>
   </ul>
   <Reacquire
@@ -125,6 +129,15 @@ export default {
   created() {
     this.getData()
   },
+  computed: {
+    rate() {
+      return (value) => {
+        if (eval(Object.values(this.userOverview).join('+')) != 0) {
+          return (value / eval(Object.values(this.userOverview).join('+')) * 100).toFixed(2) + '%'
+        }
+      }
+    },
+  },
   mounted() {
   },
   beforeDestroy() {
@@ -135,7 +148,7 @@ export default {
       this.pageflag = true;
       currentGET("big2").then((res) => {
         if (res.success) {
-          console.log(res, '77777777777');
+          console.log("毕业生薪酬分布情况", res);
           this.userOverview = res.data;
           this.onlineconfig = {
             ...this.onlineconfig,
@@ -171,6 +184,11 @@ export default {
       text-align: center;
       height: 16px;
       font-size: 16px;
+    }
+
+    .rate {
+      font-size: 14px;
+      margin-top: 10px;
     }
 
     .user_Overview_nums {
