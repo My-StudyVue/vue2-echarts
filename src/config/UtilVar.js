@@ -16,6 +16,8 @@ const runtimeType = {
   },
 
 }
+
+console.log(process.env.VUE_APP_URL_ENV)
 runtimeType[process.env.VUE_APP_URL_ENV]()
 export default UtilVar
 
